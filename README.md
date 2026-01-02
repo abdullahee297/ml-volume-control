@@ -7,3 +7,4 @@ Till now i have just
 2) detect the hand and 
 3) changes the bgr to rgb for media pipe
 4) Add the code for the circles on the landmarks on the points as shown in the ong image
+5) Now I added the hand connections with green line
