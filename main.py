@@ -24,6 +24,28 @@ while True:
     
     if not success:
         break
+    
+    rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    mp_img = mp.Image(mp.ImageFormat.SRGB, rgb)
+    
+    result = detector.detect(mp_img)
+    
+    if result.hand_landmarks:
+        for hand in result.hand_landmarks:
+            
+            # h -> height
+            # w -> width
+            # _ -> nunmber of channels
+            h, w, _ = img.shape
+            lm_list = []
+            
+            # converts landmarks to pixel
+            for lm in hand:
+                lm_list.append((int(lm.x*w), int(lm.y*h)))
+            
+            #converts circles to landmarks
+            for x,y in lm_list:
+                cv2.circle(img, (x, y), 7, (0, 255, 0), -1)
 
     cv2.imshow("Volume Control ML Model", img)
     if cv2.waitKey(1) & 0xFF == 27:
