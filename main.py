@@ -17,6 +17,17 @@ options = HandLandmarkerOptions(
 
 detector = HandLandmarker.create_from_options(options)
 
+#hand connection
+hand_connection = [
+    (0, 1), (1, 2), (2, 3), (3, 4),                 # Thumb
+    (0, 5), (5, 9), (9, 13), (13, 17), (17, 0),     # Wist
+    (5, 6), (6, 7), (7, 8),                         # Index
+    (9, 10), (10, 11), (11, 12),                    # Middle
+    (13, 14), (14, 15), (15, 16),                   # Ring
+    (17, 18), (18, 19), (19, 20)                    # Pinky
+]
+
+
 cap = cv2.VideoCapture(0)
 
 while True:
@@ -39,13 +50,27 @@ while True:
             h, w, _ = img.shape
             lm_list = []
             
-            # converts landmarks to pixel
+            # Converts landmarks to pixel
             for lm in hand:
                 lm_list.append((int(lm.x*w), int(lm.y*h)))
             
-            #converts circles to landmarks
+            # Converts circles to landmarks
             for x,y in lm_list:
-                cv2.circle(img, (x, y), 7, (0, 255, 0), -1)
+                cv2.circle(img,
+                            (x, y),
+                            7, 
+                            (0, 0, 255), 
+                            -1
+                            )
+                
+            # Join the lines of hand landmarks
+            for start, end in hand_connection:
+                cv2.line(img, 
+                        lm_list[start], 
+                        lm_list[end], 
+                        (0, 255, 0), 
+                        4
+                        )
 
     cv2.imshow("Volume Control ML Model", img)
     if cv2.waitKey(1) & 0xFF == 27:
