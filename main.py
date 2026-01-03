@@ -4,6 +4,10 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
+import math
+from pycaw.pycaw import AudioUtilities
+import numpy as np
+
 BaseOptions = python.BaseOptions
 HandLandmarker = vision.HandLandmarker
 HandLandmarkerOptions = vision.HandLandmarkerOptions
@@ -30,6 +34,21 @@ hand_connection = [
 p_time = 0
 
 cap = cv2.VideoCapture(0)
+
+
+
+
+device = AudioUtilities.GetSpeakers()
+volume = device.EndpointVolume
+print(f"Audio output: {device.FriendlyName}")
+# print(f"- Muted: {bool(volume.GetMute())}")
+# print(f"- Volume level: {volume.GetMasterVolumeLevel()} dB")
+print(f"- Volume range: {volume.GetVolumeRange()[0]} dB - {volume.GetVolumeRange()[1]} dB")
+
+# Getting the volume levels and save in the variables
+minVol, maxVol, _ = volume.GetVolumeRange()
+
+
 
 while True:
     success, img = cap.read()
@@ -112,7 +131,40 @@ while True:
                         cv2.FILLED
                         )
             
+            length = math.hypot(x2 - x1, y2 - y1)
+            # print(length)
             
+            vol = np.interp(length, (40, 200), (minVol, maxVol))
+            print(vol)
+            
+            volume.SetMasterVolumeLevel(vol, None)
+            
+            # Length ranges from 40 to 200
+            # Min 40 so -63
+            # Max 200 so 0
+            
+            if length < 40:
+                cv2.circle(img,
+                        (cx, cy),
+                        10,
+                        (0, 0, 255),
+                        cv2.FILLED
+                        )
+            elif (length < 140) & (length > 40):
+                cv2.circle(img,
+                        (cx, cy),
+                        10,
+                        (0 ,255, 255),
+                        cv2.FILLED
+                        )
+            else:
+                cv2.circle(img,
+                        (cx, cy),
+                        10,
+                        (0, 255, 0),
+                        cv2.FILLED
+                        )
+                
             
     # Show FPS on the screen
     cv2.putText(img,
@@ -120,7 +172,7 @@ while True:
                 (10, 30),
                 cv2.FONT_HERSHEY_PLAIN,
                 2,
-                (0, 255, 255),
+                (255, 255, 0),
                 2
                 )
 
