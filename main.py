@@ -32,10 +32,11 @@ hand_connection = [
 ]
 
 p_time = 0
+vol = 0
+volbar = 400
+volpercent = 0
 
 cap = cv2.VideoCapture(0)
-
-
 
 
 device = AudioUtilities.GetSpeakers()
@@ -47,7 +48,6 @@ print(f"- Volume range: {volume.GetVolumeRange()[0]} dB - {volume.GetVolumeRange
 
 # Getting the volume levels and save in the variables
 minVol, maxVol, _ = volume.GetVolumeRange()
-
 
 
 while True:
@@ -135,9 +135,12 @@ while True:
             # print(length)
             
             vol = np.interp(length, (40, 200), (minVol, maxVol))
+            volbar = np.interp(length, (40, 200), (400 , 160))
+            volpercent = np.interp(length, (40, 200), (0, 100))
             print(vol)
             
             volume.SetMasterVolumeLevel(vol, None)
+            
             
             # Length ranges from 40 to 200
             # Min 40 so -63
@@ -164,12 +167,33 @@ while True:
                         (0, 255, 0),
                         cv2.FILLED
                         )
-                
+            
+            
+            
+    cv2.rectangle(img,
+                (60, 160),
+                (85, 400),
+                (0, 255, 0),
+                3)
+    cv2.rectangle(img,
+                (60, int(volbar)),
+                (85, 400),
+                (0, 255, 0),
+                cv2.FILLED)
+    
+    cv2.putText(img,
+                f'{int(volpercent)} %',
+                (40, 120),
+                cv2.FONT_HERSHEY_PLAIN,
+                2,
+                (0, 255, 0),
+                2
+                )
             
     # Show FPS on the screen
     cv2.putText(img,
                 f'FPS: {int(fps)}',
-                (10, 30),
+                (30, 60),
                 cv2.FONT_HERSHEY_PLAIN,
                 2,
                 (255, 255, 0),
