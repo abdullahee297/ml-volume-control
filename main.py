@@ -114,8 +114,31 @@ while True:
                         cv2.FILLED
                         )
             
-            # length = math.hypot(x2 - x1, y2 - y1)
-            # print(length)
+            length = math.hypot(x2 - x1, y2 - y1)
+            print(length)
+            
+            if length < 40:
+                cv2.circle(img,
+                        (cx, cy),
+                        10,
+                        (0, 0, 255),
+                        cv2.FILLED
+                        )
+            elif (length < 140) & (length > 40):
+                cv2.circle(img,
+                        (cx, cy),
+                        10,
+                        (0 ,255, 255),
+                        cv2.FILLED
+                        )
+            else:
+                cv2.circle(img,
+                        (cx, cy),
+                        10,
+                        (0, 255, 0),
+                        cv2.FILLED
+                        )
+                
             
     # Show FPS on the screen
     cv2.putText(img,
@@ -123,7 +146,7 @@ while True:
                 (10, 30),
                 cv2.FONT_HERSHEY_PLAIN,
                 2,
-                (0, 255, 255),
+                (255, 255, 0),
                 2
                 )
 
