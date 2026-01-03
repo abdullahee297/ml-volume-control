@@ -12,7 +12,7 @@ VisionRunningMode = vision.RunningMode
 options = HandLandmarkerOptions(
     base_options = BaseOptions(model_asset_path = "hand_landmarker.task"),
     running_mode = VisionRunningMode.IMAGE,
-    num_hands = 2
+    num_hands = 1
 )
 
 detector = HandLandmarker.create_from_options(options)
@@ -54,6 +54,16 @@ while True:
             for lm in hand:
                 lm_list.append((int(lm.x*w), int(lm.y*h)))
             
+            
+            # Join the lines of hand landmarks
+            for start, end in hand_connection:
+                cv2.line(img, 
+                        lm_list[start], 
+                        lm_list[end], 
+                        (0, 255, 0), 
+                        4
+                        )
+                
             # Converts circles to landmarks
             for x,y in lm_list:
                 cv2.circle(img,
@@ -63,14 +73,7 @@ while True:
                             -1
                             )
                 
-            # Join the lines of hand landmarks
-            for start, end in hand_connection:
-                cv2.line(img, 
-                        lm_list[start], 
-                        lm_list[end], 
-                        (0, 255, 0), 
-                        4
-                        )
+            
 
     cv2.imshow("Volume Control ML Model", img)
     if cv2.waitKey(1) & 0xFF == 27:
