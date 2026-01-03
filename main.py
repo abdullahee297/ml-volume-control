@@ -5,6 +5,8 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
 import math
+from pycaw.pycaw import AudioUtilities
+import numpy as np
 
 BaseOptions = python.BaseOptions
 HandLandmarker = vision.HandLandmarker
@@ -32,6 +34,21 @@ hand_connection = [
 p_time = 0
 
 cap = cv2.VideoCapture(0)
+
+
+
+
+device = AudioUtilities.GetSpeakers()
+volume = device.EndpointVolume
+print(f"Audio output: {device.FriendlyName}")
+# print(f"- Muted: {bool(volume.GetMute())}")
+# print(f"- Volume level: {volume.GetMasterVolumeLevel()} dB")
+print(f"- Volume range: {volume.GetVolumeRange()[0]} dB - {volume.GetVolumeRange()[1]} dB")
+
+# Getting the volume levels and save in the variables
+minVol, maxVol, _ = volume.GetVolumeRange()
+
+
 
 while True:
     success, img = cap.read()
@@ -115,7 +132,16 @@ while True:
                         )
             
             length = math.hypot(x2 - x1, y2 - y1)
-            print(length)
+            # print(length)
+            
+            vol = np.interp(length, (40, 200), (minVol, maxVol))
+            print(vol)
+            
+            volume.SetMasterVolumeLevel(vol, None)
+            
+            # Length ranges from 40 to 200
+            # Min 40 so -63
+            # Max 200 so 0
             
             if length < 40:
                 cv2.circle(img,
