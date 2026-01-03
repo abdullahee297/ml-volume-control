@@ -1,9 +1,2 @@
-cv2.putText(img,
-            #             f'FPS: {fps}',
-            #             (10, 30),
-            #             cv2.FONT_HERSHEY_PLAIN,
-            #             2
-            #             (0, 255, 255),
-            #             2
-            #             )
-            
+length = math.hypot(x2 - x1, y2 - y1)
+            # print(length)

@@ -4,6 +4,8 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
+import math
+
 BaseOptions = python.BaseOptions
 HandLandmarker = vision.HandLandmarker
 HandLandmarkerOptions = vision.HandLandmarkerOptions
@@ -112,7 +114,8 @@ while True:
                         cv2.FILLED
                         )
             
-            
+            # length = math.hypot(x2 - x1, y2 - y1)
+            # print(length)
             
     # Show FPS on the screen
     cv2.putText(img,
